@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Keha.SuomiFiViestitHub.Client</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.0.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Authors>Antti Sarjanoja</Authors>
+    <Company>ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Company>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Description>Client package for Suomi.fi/Viestit -service hub. More information at:
+esuomi.fi/palveluntarjoajille/viestit/
+joinex.com/sites/mip.io/index.html</Description>
+    <Copyright>2018 ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Copyright>
+    <PackageLicenseUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient.git</RepositoryUrl>
+    <PackageIconUrl></PackageIconUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+</Project>
