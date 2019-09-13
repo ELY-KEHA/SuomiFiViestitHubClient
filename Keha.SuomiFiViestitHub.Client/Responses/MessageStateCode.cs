@@ -11,6 +11,10 @@
         Success = 200,
         /// <summary>"Kutsu onnistunut ja laitettu käsittelyyn asiointitilipalvelussa, mutta se ei vielä näy asiakkaan asiointitilillä. Lopullinen vastaus on haettavissa erikseen erillisellä kutsulla"</summary>
         SuccessButInProcess = 202,
+        /// <summary>"Viesti on luettu asiakkaan toimesta"</summary>
+        SuccessHasBeenRead = 220,
+        /// <summary>"Viesti on kuitattu luetuksi asiakkaan toimesta - todisteellinen tiedoksianto"</summary>
+        SuccessHasBeenAcknowledged = 230,
 
         // "Näissä tilanteissa asiaa ei ole tallennettu asiointitilipalveluun"
 
@@ -27,7 +31,9 @@
         /// <summary>"Liian iso liitetiedoston koko"</summary>
         FilesTooLargeError = 529,
         /// <summary>"Muu virhe"</summary>
-        OtherError = 550
+        OtherError = 550,
+        /// <summary>"Liitettä ei saatu haettua tallennuspalvelusta"</summary>
+        CouldNotFetchFileFromService = 580
 
         // NOTE: "Tiloja 522 ja 523 ei palauteta tässä, koska virustarkitus tapahtuu työjonon kautta"
         // FileSavingError = 522, // Not in use - "ongelma liitetiedoston tallennuksessa"

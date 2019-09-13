@@ -28,7 +28,7 @@ namespace Keha.SuomiFiViestitHub.Client.Responses
                 public string CustomerId { get; set; } // e.g. sotu
 
                 [JsonProperty(Required = Required.Default, PropertyName = "tunnusTyyppi")]
-                public string CustomerIdType { get; set; } // Is always "SSN"
+                public string CustomerIdType { get; set; } // Is always "SSN" (hub does not support y-tunnus, aka. "CRN" yet)
 
                 [JsonProperty(Required = Required.Always, PropertyName = "asiointitiliTunniste")]
                 public string ServiceMessageId { get; set; } // "Asian yksilöivä tunniste asiointitilillä"

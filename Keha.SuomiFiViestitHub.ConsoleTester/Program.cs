@@ -16,7 +16,7 @@ namespace Keha.SuomiFiViestitHub.ConsoleTester
 
         static int Main(string[] args)
         {
-            if (args.Length > 7)
+            if (args.Length != 7)
             {
                 Console.WriteLine("Please enter correct arguments:");
                 Console.WriteLine("1) Hub Url 2) Hub Port 3) Sender name 4) suomi.fi/Viestit sender account id 5) Receiving persons SSN 6) Unique messageId 7) Message text");
