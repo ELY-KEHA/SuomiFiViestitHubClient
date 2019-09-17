@@ -16,5 +16,8 @@ namespace Keha.SuomiFiViestitHub.Client
 
         /// <summary></summary>
         Task<List<SentMessageStatus>> SendMessageToViestit(List<ViestitMessage> msgList);
+
+        /// <summary></summary>
+        Task<List<SentMessageStatus>> SendPrintableMessageToViestit(List<PrintableViestitMessage> msgList);
     }
 }

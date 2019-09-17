@@ -23,5 +23,20 @@ namespace Keha.SuomiFiViestitHub.Client.HubApi
             }
             return true;
         }
+        internal static bool HandleResponseStateCode(LahetaViestiResponseStateCode code)
+        {
+            switch (code)
+            {
+                case LahetaViestiResponseStateCode.SuccessButInProcess: return true;
+                case LahetaViestiResponseStateCode.FalseDataError: throw new FalseDataException();
+                case LahetaViestiResponseStateCode.WrongAuthError: throw new AuthorizationException();
+                case LahetaViestiResponseStateCode.NotMatchingIdsError: throw new NotMatchingIdsException();
+                case LahetaViestiResponseStateCode.NotAllowedError: throw new ActionNotAllowedException();
+                case LahetaViestiResponseStateCode.FalseSignatureError: throw new FalseSignatureException();
+                case LahetaViestiResponseStateCode.OtherError: throw new OtherException();
+                case LahetaViestiResponseStateCode.ConnectionError: throw new ConnectionException();
+            }
+            return true;
+        }
     }
 }

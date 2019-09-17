@@ -236,11 +236,40 @@ namespace Keha.SuomiFiViestitHub.ClientTests
             const string msgCodeDescription = "Asia on tallennettuna ja näkyy asiakkaalle.";
             const string sentMsgId = "SPAv2-1234-test";
             const string viestitId = "TiliTunniste";
+            const string sanomaTunniste = "123-123";
 
+            // request
+            const string sentMsgNumber = "ViestinTunniste";
+            const string sentTopic = "Otsikko";
+            const string sentName = "Lähettäjänimi";
+            const string sentText = "Sisältötekstiä.";
+
+            var linkList = new List<ViestitMessageLink>
+            {
+                new ViestitMessageLink { Url = "TestUrl.com", Description = "UrlDescription" }
+            };
+            var fileList = new List<ViestitMessageFile>
+            { 
+                new ViestitMessageFile { Name = "Filename", Size = 10, Content = "Base64 text", ContentType = "application/pdf" }
+            };
+
+            var viestitMessage = new ViestitMessage
+            {
+                SocialSecurityNumber = ssn,
+                Id = sentMsgId,
+                MsgId = sentMsgNumber,
+                Topic = sentTopic,
+                SenderName = sentName,
+                Text = sentText,
+                Links = linkList,
+                Files = fileList
+            };
+
+            // response
             dynamic responseMessage = new JObject();
             responseMessage.tilaKoodi = ResponseStateCode.Success;
             responseMessage.tilaKoodiKuvaus = "TestiKuvaus";
-            responseMessage.sanomaTunniste = "123-123";
+            responseMessage.sanomaTunniste = sanomaTunniste;
             responseMessage.aikaleima = (long)12345;
             responseMessage.kohdeMaara = 1;
             responseMessage.kohteet = new JArray();
@@ -259,32 +288,8 @@ namespace Keha.SuomiFiViestitHub.ClientTests
             var mockResponse = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(responseMessage.ToString()) };
             var client = GetClient(mockResponse);
 
-            const string sentMsgNumber = "ViestinTunniste";
-            const string sentTopic = "Otsikko";
-            const string sentName = "Lähettäjänimi";
-            const string sentText = "Sisältötekstiä.";
-
             // ACT
-            var linkList = new List<ViestitMessageLink>
-            {
-                new ViestitMessageLink { Url = "TestUrl.com", Description = "UrlDescription" }
-            };
-            var fileList = new List<ViestitMessageFile>
-            { 
-                new ViestitMessageFile { Name = "Filename", Size = 10, Content = "Base64 text", ContentType = "application/pdf" }
-            };
-
-            var responseData = await client.SendMessageToViestit(new List<ViestitMessage> { new ViestitMessage
-            {
-                SocialSecurityNumber = ssn,
-                Id = sentMsgId,
-                MsgId = sentMsgNumber,
-                Topic = sentTopic,
-                SenderName = sentName,
-                Text = sentText,
-                Links = linkList,
-                Files = fileList
-            }});
+            var responseData = await client.SendMessageToViestit(new List<ViestitMessage> { viestitMessage });
 
             // ASSERT
             Func<HttpContent, bool> requestContainsCorrectData = (content =>
@@ -297,14 +302,14 @@ namespace Keha.SuomiFiViestitHub.ClientTests
                     && data.lahettajaNimi == sentName
                     && data.kuvausTeksti == sentText
                     && data.tiedostot.Count == 1
-                    && data.linkit.Count == 1;
+                    && data.linkit.Count == 1
+                    && data.lukuKuittaus == false
+                    && data.vastaanottoVahvistus == false;
             });
 
-            Assert.Equal(responseData[0].SocialSecurityNumber, ssn);
-            Assert.Equal(responseData[0].MsgState, msgCode);
-            Assert.Equal(responseData[0].MsgStateDescription, msgCodeDescription);
-            Assert.Equal(responseData[0].Id, sentMsgId);
-            Assert.Equal(responseData[0].ViestitId, viestitId);
+            Assert.Equal(responseData[0].StateCode, msgCode);
+            Assert.Equal(responseData[0].StateDescription, msgCodeDescription);
+            Assert.Equal(responseData[0].Id, sanomaTunniste);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",
@@ -312,6 +317,111 @@ namespace Keha.SuomiFiViestitHub.ClientTests
                 ItExpr.Is<HttpRequestMessage>(req =>
                     req.Method == HttpMethod.Post
                     && req.RequestUri == GetExpectedUri("/lisaakohteita")
+                    && requestContainsCorrectData(req.Content)
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async void TestSendPrintableMessage(bool? sendToPrinting)
+        {
+            // ARRANGE
+            const string ssn = "123456-7890";
+            const MessageStateCode msgCode = MessageStateCode.SuccessButInProcess;
+            const string msgCodeDescription = "Asia on tallennettuna ja näkyy asiakkaalle.";
+            const string sentMsgId = "SPAv2-1234-test";
+            const long timeStamp = 1568615412083;
+            const string sanomaTunniste = "123-123";
+
+            // request
+            const string sentMsgNumber = "ViestinTunniste";
+            const string sentTopic = "Otsikko";
+            const string sentName = "Lähettäjänimi";
+            const string sentText = "Sisältötekstiä.";
+
+            const string recipientName = "Maisa Testaaja";
+            const string streetAddress = "Lähitie 123 a 36";
+            const string postalCode = "12345";
+            const string city = "Betonila";
+            const string countryCode = "FI";
+
+            const string printingProvider = "Printtifirma";
+            var file = new ViestitMessageFile { Name = "Filename", Size = 10, Content = "Base64 text", ContentType = "application/pdf" };
+
+            var printableMessage = new PrintableViestitMessage
+            {
+                SocialSecurityNumber = ssn,
+                Id = sentMsgId,
+                File = file,
+                MsgId = sentMsgNumber,
+                Topic = sentTopic,
+                SenderName = sentName,
+                Text = sentText,
+                Address = new AddressInformation
+                {
+                    RecipientName = recipientName,
+                    StreetAddress = streetAddress,
+                    PostalCode = postalCode,
+                    City = city,
+                    CountryCode = countryCode
+                },
+                PrintingProvider = printingProvider
+            };
+
+            if (sendToPrinting.HasValue)
+            {
+                printableMessage.TestingOnlyDoNotSendPrinted = sendToPrinting.Value;
+            }
+
+            // response
+            dynamic responseMessage = new JObject();
+            responseMessage.aikaleima = timeStamp;
+            responseMessage.tilaKoodi = msgCode;
+            responseMessage.tilaKoodiKuvaus = msgCodeDescription;
+            responseMessage.sanomaTunniste = sanomaTunniste;
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(responseMessage.ToString()) };
+            var client = GetClient(mockResponse);
+
+            // ACT
+            var responseData = await client.SendPrintableMessageToViestit(new List<PrintableViestitMessage> { printableMessage });
+
+            // ASSERT
+            Func<HttpContent, bool> requestContainsCorrectData = content =>
+            {
+                var data = JsonConvert.DeserializeObject<dynamic>(content.ReadAsStringAsync().Result);
+                return data.asiakasTunnus == ssn
+                    && data.osoiteNimi == recipientName
+                    && data.osoiteLahiosoite == streetAddress
+                    && data.osoitePostinumero == postalCode
+                    && data.osoitePostitoimipaikka == city
+                    && data.osoiteMaakoodi == countryCode
+                    && data.tiedostot.Count == 1
+                    && data.viranomaisTunniste == sentMsgId
+                    && data.asiaNumero == sentMsgNumber
+                    && data.nimeke == sentTopic
+                    && data.lahettajaNimi == sentName
+                    && data.kuvausTeksti == sentText
+                    && data.lukuKuittaus == false
+                    && data.vastaanottoVahvistus == false
+                    && data.paperi == false
+                    && data.lahetaTulostukseen == !(sendToPrinting ?? false); // NOTE: Default must be true!
+            };
+
+            Assert.Equal(responseData[0].StateCode, msgCode);
+            Assert.Equal(responseData[0].StateDescription, msgCodeDescription);
+            Assert.Equal(responseData[0].Id, sanomaTunniste);
+
+            _handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Exactly(1),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post
+                    && req.RequestUri == GetExpectedUri("/lahetaviesti")
                     && requestContainsCorrectData(req.Content)
                 ),
                 ItExpr.IsAny<CancellationToken>()

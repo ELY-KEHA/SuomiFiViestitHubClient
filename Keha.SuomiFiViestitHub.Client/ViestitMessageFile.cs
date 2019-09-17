@@ -21,9 +21,9 @@ namespace Keha.SuomiFiViestitHub.Client
         [Required(AllowEmptyStrings = false)]
         public string ContentType { get; set; }
 
-        internal static LisaaKohteitaRequest.RequestFile ToRequestFile(ViestitMessageFile file)
+        internal static RequestFile ToRequestFile(ViestitMessageFile file)
         {
-            return new LisaaKohteitaRequest.RequestFile
+            return new RequestFile
             {
                 Size = file.Size,
                 Base64Content = file.Content,

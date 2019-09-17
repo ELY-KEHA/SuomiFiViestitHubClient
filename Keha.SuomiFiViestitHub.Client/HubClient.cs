@@ -50,6 +50,7 @@ namespace Keha.SuomiFiViestitHub.Client
         /// <summary>Initializes RequestBase with configured properties</summary>
         private RequestBase InitRequest(RequestBase request)
         {
+            request.TimeStampUtcMs = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             request.CallerName = _configuration.CallerName;
             request.CallerId = _configuration.ViestitAccountId;
             return request;
@@ -84,7 +85,7 @@ namespace Keha.SuomiFiViestitHub.Client
         }
 
         /// <summary>
-        /// Sends messages to customers to suomi.fi/viestit -service.
+        /// Sends messages to customers through suomi.fi/viestit -service.
         /// Throws ClientFaultException in case of this Client working improperly.
         /// Throws custom Keha.SuomiFiViestitHub.Client.Exceptions on returned error codes.
         /// </summary>
@@ -107,15 +108,17 @@ namespace Keha.SuomiFiViestitHub.Client
                     CustomerId = msg.SocialSecurityNumber,
                     Files = msg.Files != null
                         ? msg.Files.ConvertAll(ViestitMessageFile.ToRequestFile)
-                        : new List<LisaaKohteitaRequest.RequestFile>(),
+                        : new List<RequestFile>(),
                     Links = msg.Links != null
                         ? msg.Links.ConvertAll(ViestitMessageLink.ToRequestLink)
-                        : new List<LisaaKohteitaRequest.RequestLink>(),
+                        : new List<RequestLink>(),
                     Id = msg.Id,
                     MsgId = msg.MsgId,
                     Topic = msg.Topic,
                     SenderName = msg.SenderName,
-                    Text = msg.Text
+                    Text = msg.Text,
+                    ReadConfirmation = msg.ReadConfirmation,
+                    ReceivedConfirmation = msg.ReceivedConfirmation
                 };
                 InitRequest(req);
                 reqList.Add(HubApi.SendMessageToViestit.Post(_client, req));
@@ -123,13 +126,63 @@ namespace Keha.SuomiFiViestitHub.Client
 
             var data = new List<LisaaKohteitaResponse>(await Task.WhenAll(reqList));
             return data.ConvertAll((response) => 
+                new SentMessageStatus // NOTE: We can hardcode [0] here since the API only allows arrays with one element
+                {
+                    StateCode = response.Targets[0].Customers[0].MessageStateCode,
+                    StateDescription = response.Targets[0].Customers[0].MessageStateDescription,
+                    Id = response.MessageId
+                });
+        }
+
+        /// <summary>
+        /// Sends printable messages to customers through suomi.fi/viestit -service.
+        /// Throws ClientFaultException in case of this Client working improperly.
+        /// Throws custom Keha.SuomiFiViestitHub.Client.Exceptions on returned error codes.
+        /// </summary>
+        /// <param name="msgList">Messages are given as a list of ViestitMessages</param>
+        /// <returns>Returns the StateCode of the handled message along with supplementing information</returns>
+        public async Task<List<SentMessageStatus>> SendPrintableMessageToViestit(List<PrintableViestitMessage> msgList)
+        {
+            msgList.ForEach((msg) =>
+            {
+                Validator.ValidateObject(msg, new ValidationContext(msg), true);
+                Validator.ValidateObject(msg.Address, new ValidationContext(msg.Address)); // TODO: Is this required?
+            });
+
+            var reqList = new List<Task<LahetaViestiResponse>>();
+            foreach (PrintableViestitMessage msg in msgList)
+            {
+                var req = new LahetaViestiRequest
+                {
+                    CustomerId = msg.SocialSecurityNumber,
+                    Files = new List<RequestFile>() { ViestitMessageFile.ToRequestFile(msg.File) },
+                    Id = msg.Id,
+                    MsgId = msg.MsgId,
+                    Topic = msg.Topic,
+                    SenderName = msg.SenderName,
+                    Text = msg.Text,
+                    RecipientName = msg.Address.RecipientName,
+                    StreetAddress = msg.Address.StreetAddress,
+                    PostalCode = msg.Address.PostalCode,
+                    City = msg.Address.City,
+                    CountryCode = msg.Address.CountryCode,
+                    PrintingProvider = msg.PrintingProvider,
+                    SendAlsoAsPrinted = msg.SendAlsoAsPrinted,
+                    UsePrinting = !msg.TestingOnlyDoNotSendPrinted,
+                    ReadConfirmation = msg.ReadConfirmation,
+                    ReceivedConfirmation = msg.ReceivedConfirmation
+                };
+                InitRequest(req);
+                reqList.Add(HubApi.SendPrintableMessageToViestit.Post(_client, req));
+            }
+
+            var data = new List<LahetaViestiResponse>(await Task.WhenAll(reqList));
+            return data.ConvertAll((response) =>
                 new SentMessageStatus
                 {
-                    Id = response.Targets[0].Id,
-                    SocialSecurityNumber = response.Targets[0].Customers[0].CustomerId,
-                    ViestitId = response.Targets[0].Customers[0].ServiceMessageId,
-                    MsgState = response.Targets[0].Customers[0].MessageStateCode,
-                    MsgStateDescription = response.Targets[0].Customers[0].MessageStateDescription
+                    StateCode = response.StateCode.ToMessageStateCode(),
+                    StateDescription = response.StateCodeDescription,
+                    Id = response.MessageId,
                 });
         }
     }

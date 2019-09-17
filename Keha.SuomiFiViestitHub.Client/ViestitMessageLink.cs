@@ -16,9 +16,9 @@ namespace Keha.SuomiFiViestitHub.Client
         [Required(AllowEmptyStrings = false)]
         public string Url { get; set; }
 
-        internal static LisaaKohteitaRequest.RequestLink ToRequestLink(ViestitMessageLink link)
+        internal static RequestLink ToRequestLink(ViestitMessageLink link)
         {
-            return new LisaaKohteitaRequest.RequestLink
+            return new RequestLink
             {
                 Description = link.Description,
                 Url = link.Url

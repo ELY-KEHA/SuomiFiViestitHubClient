@@ -52,6 +52,14 @@ Paluuarvona tulee `SentMessageStatus`, jonka property `MessageStateCode MsgState
 
 **ConsoleTester** -projektissa on nähtävissä yksinkertaiset käyttötapaukset kirjaston tarjoamista metodeista rajapinnan käyttöön.
 
+### Kirjerajapinta
+
+Kirjerajapintaa kutsutaan ```SendPrintableMessageToViestit``` kautta ja se toimii pitkälti kuten ```SendMessageToViestitService```. Kutsuun vaaditaan lisänä osoitetiedot ja tulostustoimittaja. Toiminto tukee ainoastaan yhden tulostusmuotoillun PDF-tiedoston lähettämistä. Tulostustoiminnallisuus vaatii tehdyt sopimukset VRK:n ja tulostustoimittajan kanssa, lisätietoja voi lukea [rajapintakuvauksesta](https://www.joinex.com/sites/mip.io/mip.io-asti/sanomat.html#lahetaviesti).
+
+![](doc/07_tulostustoiminnallisuus.png)
+
+**Huom!** Testausvaiheessa tulee asettaa ```TestingOnlyDoNotSendPrinted = true```, jotta lähetetyt viestit eivät oikeasti mene tulostuspalveluun.
+
 ### Virhetilanteet
 
 Virhetilanteet tulevat poikkeuksina:
@@ -77,6 +85,8 @@ Muut (Linux, iOS):
 
 ## Julkaisuhistoria
 
+* 0.2.0
+    * Lisätty lahetaviesti -rajapinta
 * 0.1.0
     * Ensijulkaisu
 

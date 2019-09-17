@@ -5,16 +5,28 @@ namespace Keha.SuomiFiViestitHub.Client.Requests
 {
     // Full schema at https://www.joinex.com/sites/mip.io/mip.io-asti/index.html
     // Request JSON-schema
-    internal class LisaaKohteitaRequest : RequestBase
+    internal class LahetaViestiRequest : RequestBase
     {
         [JsonProperty(PropertyName = "asiakasTunnus")]
         public string CustomerId;
 
+        [JsonProperty(PropertyName = "osoiteNimi")]
+        public string RecipientName;
+
+        [JsonProperty(PropertyName = "osoiteLahiosoite")]
+        public string StreetAddress;
+
+        [JsonProperty(PropertyName = "osoitePostinumero")]
+        public string PostalCode;
+
+        [JsonProperty(PropertyName = "osoitePostitoimipaikka")]
+        public string City;
+
+        [JsonProperty(PropertyName = "osoiteMaakoodi")]
+        public string CountryCode;
+
         [JsonProperty(PropertyName = "tiedostot")]
         public List<RequestFile> Files;
-
-        [JsonProperty(PropertyName = "linkit")]
-        public List<RequestLink> Links;
 
         [JsonProperty(PropertyName = "viranomaisTunniste")]
         public string Id; // "Lähettäjän antama viestin yksilöivä tunniste"
@@ -42,5 +54,14 @@ namespace Keha.SuomiFiViestitHub.Client.Requests
 
         [JsonProperty(PropertyName = "emailLisatietoSisalto")]
         public string EmailText;
+
+        [JsonProperty(PropertyName = "paperi")]
+        public bool SendAlsoAsPrinted;
+
+        [JsonProperty(PropertyName = "lahetaTulostukseen")]
+        public bool UsePrinting; // Huom! Lähinnä testaukseen, tuotannossa pitää olla aina 'true'
+
+        [JsonProperty(PropertyName = "tulostusToimittaja")]
+        public string PrintingProvider;
     }
 }

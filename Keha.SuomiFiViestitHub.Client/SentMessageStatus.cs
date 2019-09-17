@@ -7,15 +7,11 @@ namespace Keha.SuomiFiViestitHub.Client
     /// </summary>
     public struct SentMessageStatus
     {
-        /// <summary>Receiving person's SSN</summary>
-        public string SocialSecurityNumber;
-        /// <summary>Same as ViestitMessage.Id, "Lähettäjän antama viestin yksilöivä tunniste"</summary>
-        public string Id;
-        /// <summary>Id given by the Viestit-service</summary>
-        public string ViestitId;
         /// <summary>State code indicates whether the message was saved or something went wrong</summary>
-        public MessageStateCode MsgState;
+        public MessageStateCode StateCode;
         /// <summary>Text description text of the code</summary>
-        public string MsgStateDescription;
+        public string StateDescription;
+        /// <summary>Viestit-service message id, "Sanomatunniste", for debugging purposes</summary>
+        public string Id;
     }
 }

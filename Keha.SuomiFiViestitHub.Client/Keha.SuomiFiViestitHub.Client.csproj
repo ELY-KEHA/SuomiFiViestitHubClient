@@ -1,18 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Keha.SuomiFiViestitHub.Client</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Version>0.2.0.0</Version>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <Authors>Antti Sarjanoja</Authors>
     <Company>ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Company>
-    <FileVersion>0.1.0.0</FileVersion>
+    <FileVersion>0.2.0.0</FileVersion>
     <Description>Client package for Suomi.fi/Viestit -service hub. More information at:
 esuomi.fi/palveluntarjoajille/viestit/
 joinex.com/sites/mip.io/index.html</Description>
-    <Copyright>2018 ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Copyright>
+    <Copyright>2019 ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Copyright>
     <PackageLicenseUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient.git</RepositoryUrl>
