@@ -4,19 +4,21 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Keha.SuomiFiViestitHub.Client</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.0.0</Version>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <Version>0.2.1.0</Version>
+    <AssemblyVersion>0.2.1.0</AssemblyVersion>
     <Authors>Antti Sarjanoja</Authors>
     <Company>ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Company>
-    <FileVersion>0.2.0.0</FileVersion>
+    <FileVersion>0.2.1.0</FileVersion>
     <Description>Client package for Suomi.fi/Viestit -service hub. More information at:
 esuomi.fi/palveluntarjoajille/viestit/
 joinex.com/sites/mip.io/index.html</Description>
     <Copyright>2019 ELY-keskusten sekä TE-toimistojen kehittämis- ja hallintokeskus (KEHA-keskus)</Copyright>
-    <PackageLicenseUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ELY-KEHA/SuomiFiViestitHubClient.git</RepositoryUrl>
     <PackageIconUrl></PackageIconUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,6 +33,13 @@ joinex.com/sites/mip.io/index.html</Description>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
