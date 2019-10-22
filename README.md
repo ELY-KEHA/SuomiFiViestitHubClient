@@ -74,7 +74,7 @@ _Lisätietoja viestien tilakoodeista voi lukea hubin [rajapintakuvauksesta](http
 
 Windows:
 
-* Toteutettu Visual Studio 2017:lla, projektit:
+* Toteutettu Visual Studio 2019:lla, projektit:
     * `Client` tuottaa Nuget-paketin, .NET-Standard 2.0
     * `ClientTests` sisältää yksikkötestit kirjastolle, .NET-Framework 4.6.1
     * `ConsoleTester` on konsolisovellusesimerkki kirjaston käytöstä, .NET-Framework 4.6.1
@@ -85,8 +85,10 @@ Muut (Linux, iOS):
 
 ## Julkaisuhistoria
 
+* 0.2.1
+    * Fix: PlatformTarget x86 => any CPU
 * 0.2.0
-    * Lisätty lahetaviesti -rajapinta
+    * Feat: Lisätty lahetaviesti -rajapinta
 * 0.1.0
     * Ensijulkaisu
 
